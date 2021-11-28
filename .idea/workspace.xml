@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7947b535-0cb5-4e00-a6c5-1fb884e25f07" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/ConsultantUser.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Institute.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/StudentUser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainPage.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainPage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Page.py" beforeDir="false" afterPath="$PROJECT_DIR$/Page.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +23,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="21YbS3cVlCaFmcVgdM1FiVtPaKv" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -73,5 +76,8 @@
       <updated>1638120964696</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
