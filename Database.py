@@ -73,7 +73,3 @@ class Database:
                     return True
             else:
                 return False
-
-
-Database.connectToServer()
-print(Database.getUser("123").last_name)
