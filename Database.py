@@ -19,6 +19,8 @@ class Database:
 
     @staticmethod
     def connectToServer():
+        if Database.is_connected:
+            return False
         try:
             Database.client = pymongo.MongoClient(Database.host)
             Database.is_connected = True
