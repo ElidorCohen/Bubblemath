@@ -22,10 +22,10 @@ class Database:
         try:
             Database.client = pymongo.MongoClient(Database.host)
             Database.is_connected = True
-            print("Connected")
+            return True
         except pymongo.errors.ServerSelectionTimeoutError as err:
             # do whatever you need
-            print(err)
+            return False
 
     @staticmethod
     def getUser(user_id):
@@ -58,9 +58,9 @@ class Database:
                              "age": age,
                              "user_type": user_type}
                 users.insert_one(user_data)
-                print("registered")
+                return True
             except pymongo.errors.DuplicateKeyError as err:
-                print("Already Registered")
+                return False
 
     @staticmethod
     def login(user_id, password):
