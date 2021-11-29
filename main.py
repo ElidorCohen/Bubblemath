@@ -75,90 +75,84 @@ def game_loop():
     while run_MainMenu:
         mx, my = pygame.mouse.get_pos()
         screen.fill(background)
-        match current_screen:
-            # -----------------------------MainMenu--------------------------------- #
-            case PageName.MAIN_PAGE:
-                draw_text('BubbleMate', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 230, 200)
-                login_button.draw(screen)
-                register_button.draw(screen)
-                for event in pygame.event.get():
-                    if login_button.is_clicked(event):
-                        print("login")
-                        current_screen = PageName.LOGIN_PAGE
-                    if register_button.is_clicked(event):
-                        print("register")
-                        current_screen = PageName.ROLE_PAGE
-            # ------------------------------Login---------------------------------- #
-            case PageName.LOGIN_PAGE:
-                draw_text('BubbleMate', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 230, 200)
-                draw_text('Name:', 25, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 288, 400)
-                draw_text('Password:', 25, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 290, 450)
-                connect_button.draw(screen)
-                back_button.draw(screen)
-                for event in pygame.event.get():
-                    for box in input_boxes:
-                        box.handle_event(event)
-                    if connect_button.is_clicked(event):
-                        logged = database.login(user_id_input, pass_input)
-                        if logged:
-                            current_screen = PageName.GAME_MENU_PAGE
-                        else:
-                            print("ERROR LOGGING IN")
-                    if back_button.is_clicked(event):
-                        current_screen = PageName.MAIN_PAGE
+        if current_screen == PageName.MAIN_PAGE:
+            draw_text('BubbleMate', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 230, 200)
+            login_button.draw(screen)
+            register_button.draw(screen)
+            for event in pygame.event.get():
+                if login_button.is_clicked(event):
+                    print("login")
+                    current_screen = PageName.LOGIN_PAGE
+                if register_button.is_clicked(event):
+                    print("register")
+                    current_screen = PageName.ROLE_PAGE
+        # ------------------------------Login---------------------------------- #
+        if current_screen == PageName.LOGIN_PAGE:
+            draw_text('BubbleMate', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 230, 200)
+            draw_text('Name:', 25, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 288, 400)
+            draw_text('Password:', 25, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 290, 450)
+            connect_button.draw(screen)
+            back_button.draw(screen)
+            for event in pygame.event.get():
                 for box in input_boxes:
-                    box.update()
-                for box in input_boxes:
-                    box.draw(screen)
-            # ------------------------------Role--------------------------------- #
-            case PageName.ROLE_PAGE:
-                student_button.draw(screen)
-                counselor_button.draw(screen)
-                return_button.draw(screen)
-                for event in pygame.event.get():
-                    if student_button.is_clicked(event):
-                        print("register")
-                        current_screen = PageName.REGISTER_PAGE
-                    if counselor_button.is_clicked(event):
-                        print("counselor")
-                        # set
-                        current_screen = PageName.REGISTER_PAGE
-                    if return_button.is_clicked(event):
-                        print("return")
-                        # set
+                    box.handle_event(event)
+                if connect_button.is_clicked(event):
+                    logged = database.login(user_id_input.text, pass_input.text)
+                    if logged:
                         current_screen = PageName.MAIN_PAGE
+                    else:
+                        print("ERROR LOGGING IN")
+                if back_button.is_clicked(event):
+                    current_screen = PageName.MAIN_PAGE
+            for box in input_boxes:
+                box.update()
+            for box in input_boxes:
+                box.draw(screen)
+        # ------------------------------Role--------------------------------- #
+        if current_screen == PageName.ROLE_PAGE:
+            student_button.draw(screen)
+            counselor_button.draw(screen)
+            return_button.draw(screen)
+            for event in pygame.event.get():
+                if student_button.is_clicked(event):
+                    print("register")
+                    current_screen = PageName.REGISTER_PAGE
+                if counselor_button.is_clicked(event):
+                    print("counselor")
+                    # set
+                    current_screen = PageName.REGISTER_PAGE
+                if return_button.is_clicked(event):
+                    print("return")
+                    # set
+                    current_screen = PageName.MAIN_PAGE
 
-            # -----------------------------Register--------------------------------- #
-            case PageName.REGISTER_PAGE:
-                draw_text('Register', 70, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 430, 30)  # x , y
-                draw_text('Name: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 170)
-                draw_text('Password: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 220)
-                draw_text('Institute: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 260)
-                draw_text('Id: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 300)
-                draw_text('Gender: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 340)
-                draw_text('Age: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 380)
-                done_button.draw(screen)
-                return_button.draw(screen)
-                for event in pygame.event.get():
-                    for box in input_boxes1:
-                        box.handle_event(event)
-                    if done_button.is_clicked(event):
-                        print("done")
-                        current_screen = PageName.GAME_MENU_PAGE
-                        # go to game menu page
-                        # pass
-                    if return_button.is_clicked(event):
-                        print("return")
+        # -----------------------------Register--------------------------------- #
+        if current_screen == PageName.REGISTER_PAGE:
+            draw_text('Register', 70, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 430, 30)  # x , y
+            draw_text('Name: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 170)
+            draw_text('Password: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 220)
+            draw_text('Institute: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 260)
+            draw_text('Id: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 300)
+            draw_text('Gender: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 340)
+            draw_text('Age: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), screen, 100, 380)
+            done_button.draw(screen)
+            return_button.draw(screen)
+            for event in pygame.event.get():
+                for box in input_boxes1:
+                    box.handle_event(event)
+                if done_button.is_clicked(event):
+                    registered = database.register(user_input.text,user_input.text,user_input.text,password_input.text,gender_input.text,institute_input.text,age_input.text,id_input.text)
+                    if registered:
                         current_screen = PageName.MAIN_PAGE
-                        # go to main menu page
-                        # pass
-                for box in input_boxes1:
-                    box.update()
-                for box in input_boxes1:
-                    box.draw(screen)
-            case _:
-                print("DEFAULT")
-                current_screen = PageName.MAIN_PAGE
+                if return_button.is_clicked(event):
+                    print("return")
+                    current_screen = PageName.MAIN_PAGE
+                    # go to main menu page
+                    # pass
+            for box in input_boxes1:
+                box.update()
+            for box in input_boxes1:
+                box.draw(screen)
         # -----------------------------End of Main--------------------------------- #
         if event.type == pygame.QUIT:
             run_MainMenu = False

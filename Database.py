@@ -13,7 +13,7 @@ CREATE_USER = "createUser"
 
 
 class Database:
-    host = "mongodb://{}:{}@cluster0.r0eft.mongodb.net/{}?retryWrites=true&w=majority".format(ADMIN, ADMIN_PASS, DATABASE)
+    host = "mongodb+srv://{}:{}@cluster0.r0eft.mongodb.net/{}?retryWrites=true&w=majority".format(ADMIN, ADMIN_PASS, DATABASE)
     client = MongoClient()
     is_connected = False
     is_connecting = False
@@ -29,6 +29,7 @@ class Database:
             Database.is_connecting = True
             Database.client = pymongo.MongoClient(Database.host)
             Database.is_connected = True
+            print("Connected")
             return True
         except pymongo.errors.ServerSelectionTimeoutError as err:
             Database.is_connecting = False
