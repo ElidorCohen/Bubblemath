@@ -1,7 +1,10 @@
 import pygame
+pygame.init()
 
-COLOR_INACTIVE = pygame.Color('lightskyblue3')
-COLOR_ACTIVE = pygame.Color('dodgerblue2')
+#COLOR_INACTIVE = pygame.Color('lightskyblue3') befor
+#COLOR_ACTIVE = pygame.Color('dodgerblue2') befor
+COLOR_INACTIVE = pygame.Color((255, 207, 132))
+COLOR_ACTIVE = pygame.Color((255, 255, 255))
 FONT = pygame.font.Font(None, 32)
 
 # Input from the player -------------------------------------- #

@@ -1,6 +1,6 @@
 import pymongo
 from pymongo import MongoClient
-from User import User
+from User import User, UserType
 
 
 DATABASE = "BubbleMath"
@@ -18,6 +18,7 @@ class Database:
     is_connected = False
     is_connecting = False
     is_logging_in = False
+    user_type = UserType.student
 
     @staticmethod
     def connectToServer():
