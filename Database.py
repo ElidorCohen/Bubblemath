@@ -53,22 +53,23 @@ class Database:
             return None
 
     @staticmethod
-    def register(user_id, first_name,last_name, password, gender, institute_id, age, user_type):
+    def register(user_id, first_name, password, gender, institute_id, age, user_type):
         if Database.is_connected:
             try:
                 db = Database.client.get_database(DATABASE)
                 users = db.get_collection(USERS_COLLECTION)
                 user_data = {"_id": user_id,
                              "pwd": password,
-                             "first_name": first_name,
-                             "last_name": last_name,
+                             "full_name": first_name,
                              "gender": gender,
                              "institute_id": institute_id,
                              "age": age,
                              "user_type": user_type}
                 users.insert_one(user_data)
+                print("Register success")
                 return True
             except pymongo.errors.DuplicateKeyError as err:
+                print("Error signing up")
                 return False
 
     @staticmethod
