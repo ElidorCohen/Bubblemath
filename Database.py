@@ -2,7 +2,6 @@ import pymongo
 from pymongo import MongoClient
 from User import User, UserType
 
-
 DATABASE = "BubbleMath"
 ADMIN = "admin"
 ADMIN_PASS = "GF7JmQYsRagdDIeu"
@@ -17,8 +16,10 @@ class Database:
     client = MongoClient()
     is_connected = False
     is_connecting = False
+    is_logged_in = False
     is_logging_in = False
     user_type = UserType.student
+    user_id = None
 
     @staticmethod
     def connectToServer():
@@ -83,8 +84,12 @@ class Database:
             data = users.find_one({"_id": user_id})
             if data is not None:
                 if data["pwd"] == password:
+                    Database.is_logged_in = True
+                    Database.user_id = user_id
+                    print("logged in")
                     return True
             else:
+                print("user not found")
                 return False
 
 
