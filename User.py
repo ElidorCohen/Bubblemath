@@ -4,6 +4,7 @@ from enum import Enum
 class UserType (Enum):
     counselor = 1
     student = 2
+    admin = 3
 
 
 class Gender (Enum):
