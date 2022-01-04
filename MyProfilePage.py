@@ -1,4 +1,5 @@
 import pygame
+from pymongo.database import Database
 from User import UserType
 import button
 import os
@@ -6,6 +7,7 @@ from Database import Database as database
 from Page import Page
 import MainPage
 import MainMenu
+from User import UserType
 
 class MyProfile(Page):
     def __init__(self):
@@ -15,16 +17,26 @@ class MyProfile(Page):
         self.edit_image = pygame.image.load('edit.png').convert_alpha()
         self.return_button = button.Button(20, 15, self.return_image, 0.3)
         self.edit_button = button.Button(850, 15, self.edit_image, 0.3)
+        self.user = database.getUser(database.user_id)
+        self.reports = None
+        if(self.user.user_type == UserType.admin):
+            self.reports = database.getReports()
 
     def draw_page(self):
         super(MyProfile,self).draw_page()
         self.screen.blit(self.background, (0, 0))
-        self.draw_text('Name: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 170)
-        self.draw_text('Institute: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 220)
-        if(database.user_type == UserType.student):
+        self.draw_text('Name: {} ({})'.format(self.user.full_name,self.user.user_type), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 170)
+        if(database.user_type == UserType.student.name):
             self.draw_text('consler: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 260)
             self.draw_text('rank: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 300)
             self.draw_text('rank in school: ', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 340)
+            self.draw_text('Institute: {}'.format(self.user.institute), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 220)
+        elif(database.user_type == UserType.counselor.name):
+            self.draw_text('Institute: {}'.format(self.user.institute), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 100, 220)
+        elif(database.user_type == UserType.admin.name):
+            if(self.reports is not None):
+                pass #Show reports
+
         self.return_button.draw(self.screen)
         self.edit_button.draw(self.screen)
 

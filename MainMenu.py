@@ -3,6 +3,11 @@ import button
 from Page import Page
 import MainPage
 import MyProfilePage
+from Database import Database as database
+from User import UserType
+import StatisticsPage
+import Game
+import ReportPage
 
 class MainMenu(Page):
     def __init__(self):
@@ -22,14 +27,17 @@ class MainMenu(Page):
         self.disconect_button = button.Button(1, 650, self.disconect_image, 0.3)
         self.notifictions_button = button.Button(930, 40, self.notifictions_image,0.7)
         self.mail_button = button.Button(30, 40, self.mail_image, 0.7)
+        self.user = database.getUser(database.user_id)
 
     def draw_page(self):
         super(MainMenu,self).draw_page()
+        self.draw_text('Welcome {}'.format(self.user.full_name), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 410, 20)
         self.draw_text('BubbleMath', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 230, 150)
         self.play_button.draw(self.screen)
         self.myProfile_button.draw(self.screen)
-        self.statistics_button.draw(self.screen)
-        self.report_button.draw(self.screen)
+        if(database.user_type == UserType.counselor.name):
+            self.statistics_button.draw(self.screen)
+            self.report_button.draw(self.screen)
         self.disconect_button.draw(self.screen)
         self.notifictions_button.draw(self.screen)
         self.mail_button.draw(self.screen)
@@ -38,18 +46,19 @@ class MainMenu(Page):
         for event in pygame.event.get():
             if self.play_button.is_clicked(event):
                 print("play")
-                #return Game.Game()
+                return Game.Game()
             if self.myProfile_button.is_clicked(event):
                 print("my profile")
                 return MyProfilePage.MyProfile()
             if self.statistics_button.is_clicked(event):
                 print("statistics_button")
-                #return MyProfile.MyProfile
+                return StatisticsPage.StatisticsPage()
             if self.report_button.is_clicked(event):
                 print("report_button")
-                #return MyProfile.MyProfile
+                return ReportPage.ReportPage()
             if self.disconect_button.is_clicked(event):
                 print("disconect_buttone")
+                database.disconnect()
                 return MainPage.MainPage()
             if self.notifictions_button.is_clicked(event):
                 print("notifictions_button")

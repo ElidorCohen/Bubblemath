@@ -13,11 +13,10 @@ class Gender (Enum):
 
 
 class User:
-    def __init__(self, user_id, first_name, last_name, age,user_type, gender):
+    def __init__(self, user_id, full_name, age,user_type, gender,institute):
         self.user_id = user_id
-        self.first_name = first_name
-        self.last_name = last_name
+        self.full_name = full_name
         self.age = age
-        self.user_type = user_type
         self.gender = gender
         self.user_type = user_type
+        self.institute = institute
