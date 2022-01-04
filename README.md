@@ -1,6 +1,9 @@
-# Foobar
+# BubbleMath
 
-Foobar is a Python library for dealing with word pluralization.
+BubbleMath is a computer-based video game developed by TEAM 7. It is a game used primarily to improve the math abilities in pre-high school children, before they reach middle school.
+The main purpose of this game isn't only to improve math abilities but also prepare the students for middle school, as well as making the base knowledge stronger for future accomplishments.
+We made this game as a project that is part of the Software Engineering unit in Sami Shamoon college of Engineering.
+
 
 ## Installation
 
