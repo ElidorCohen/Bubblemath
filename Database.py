@@ -1,15 +1,23 @@
 import pymongo
 from pymongo import MongoClient
+from pymongo import database
 from User import User, UserType
+from Institute import Institute
 
 DATABASE = "BubbleMath"
 ADMIN = "admin"
 ADMIN_PASS = "GF7JmQYsRagdDIeu"
 USERS_COLLECTION = "Users"
+INSTITUTE_COLLECTION = "Institutes"
+REPORTS_COLLECTION = "Reports"
 
 # Commands
 CREATE_USER = "createUser"
 
+
+class Report():
+    def __init__(self,text):
+        self.text = text
 
 class Database:
     host = "mongodb+srv://{}:{}@cluster0.r0eft.mongodb.net/{}?retryWrites=true&w=majority".format(ADMIN, ADMIN_PASS, DATABASE)
@@ -18,7 +26,7 @@ class Database:
     is_connecting = False
     is_logged_in = False
     is_logging_in = False
-    user_type = UserType.student
+    user_type = None
     user_id = None
 
     @staticmethod
@@ -38,6 +46,27 @@ class Database:
             return False
 
     @staticmethod
+    def getReports():
+        list = []
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            reports = db.get_collection(REPORTS_COLLECTION)
+            data = reports.find()
+            for item in data:
+                list.append(Report(data["id"],data["text"]))
+        return list
+
+    @staticmethod
+    def sendReport(text):
+        report = Report(text)     
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            reports = db.get_collection(REPORTS_COLLECTION)
+            data = {"text": report.text}
+            print("PRINT DATABASE {}".format(report.text))
+            reports.insert_one(data)
+
+    @staticmethod
     def getUser(user_id):
         if Database.is_connected:
             db = Database.client.get_database(DATABASE)
@@ -45,11 +74,11 @@ class Database:
             data = users.find_one({"_id": user_id})
             if data is not None:
                 user = User(data["_id"],
-                            data["first_name"],
-                            data["last_name"],
+                            data["full_name"],
                             data["age"],
                             data["user_type"],
-                            data["gender"])
+                            data["gender"],
+                            data["institute_id"])
                 return user
             return None
 
@@ -86,11 +115,37 @@ class Database:
                 if data["pwd"] == password:
                     Database.is_logged_in = True
                     Database.user_id = user_id
-                    print("logged in")
+                    Database.user_type = data["user_type"]
+                    print(Database.user_type)
+                    print(UserType.counselor.name)
+                    print("logged in as {}".format(data["user_type"]))
                     return True
             else:
                 print("user not found")
                 return False
+
+    @staticmethod
+    def disconnect():
+        Database.is_logged_in = False
+        Database.is_logging_in = False
+        Database.user_type = None
+        Database.user_id = None
+    
+
+    @staticmethod
+    def getInstitute(institute_id):
+        db = Database.client.get_database(DATABASE)
+        institutes = db.get_collection(INSTITUTE_COLLECTION)
+        data = institutes.find_one({"_id": institute_id})
+        if data is not None:
+            inst = Institute(data["name"],
+                        data["_id"],
+                        data["num_of_students"],
+                        data["counsler_id"],
+                        data["rank"])
+            return inst
+        print("fail databasa")
+        return None
 
 
 Database.connectToServer()
