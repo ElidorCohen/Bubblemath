@@ -2,7 +2,7 @@
 import pygame
 import button
 from Page import Page
-import MainPage
+import MainMenu
 from random import *
 from Database import Database as database
 import os
@@ -59,7 +59,7 @@ class Game(Page):
         self.draw_text('Time: {}'.format(int(self.time_remaining)), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 10, 100)
         self.draw_text('Score: {}'.format(self.score), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 10, 150)
         self.draw_text('Correct answer: {0}/{1}'.format(self.num_of_correct, self.num_of_questions), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 10, 200)
-        self.draw_text('{0} X {1}'.format(self.a, self.b), 60, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 500, 400)
+        self.draw_text('{0} X {1}'.format(self.a, self.b), 60, 'david.ttf', (0, 0, 0), self.screen, 500, 400)
         self.return_button.draw(self.screen)
         
     def draw_bubbles(self):
@@ -102,6 +102,12 @@ class Game(Page):
                     self.is_waiting_for_answer = False
 
     def handle_page(self):
+        for event in pygame.event.get():
+            if self.return_button.is_clicked(event):
+                database.setUserScore(self.score,self.num_of_correct,self.num_of_questions)
+                return MainMenu.MainMenu()
+            if event.type == pygame.QUIT:
+                pygame.quit()
         if(not self.is_waiting_for_answer):
             self.start_new_question()
             self.is_waiting_for_answer = True
@@ -110,11 +116,6 @@ class Game(Page):
         self.time_remaining = QUESTION_TIME - self.delta_time
         self.draw_bubbles()
         self.handle_bubbles()
-        for event in pygame.event.get():
-            if self.return_button.is_clicked(event):
-                print("return")
-                return MainPage.MainPage()
-            if event.type == pygame.QUIT:
-                pygame.quit()
+
         return self
 

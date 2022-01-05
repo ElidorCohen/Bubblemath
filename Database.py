@@ -10,6 +10,7 @@ ADMIN_PASS = "GF7JmQYsRagdDIeu"
 USERS_COLLECTION = "Users"
 INSTITUTE_COLLECTION = "Institutes"
 REPORTS_COLLECTION = "Reports"
+GENERAL_COLLECTION = "General"
 
 # Commands
 CREATE_USER = "createUser"
@@ -53,9 +54,9 @@ class Database:
             reports = db.get_collection(REPORTS_COLLECTION)
             data = reports.find()
             for item in data:
-                list.append(Report(data["id"],data["text"]))
+                list.append(item["text"])
         return list
-
+    
     @staticmethod
     def sendReport(text):
         report = Report(text)     
@@ -78,9 +79,25 @@ class Database:
                             data["age"],
                             data["user_type"],
                             data["gender"],
-                            data["institute_id"])
+                            data["institute_id"],
+                            data["score"],
+                            data["right_ans"],
+                            data["num_of_questions"])
                 return user
             return None
+    
+    @staticmethod
+    def set_admin_msg(text):
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(USERS_COLLECTION)
+            data = col.find_one({"_id": "admin_msg"})
+            update = {
+                    "$set": {
+                        "text": text,
+                    }
+                    }
+            col.find_one_and_update(data,update)    
 
     @staticmethod
     def register(user_id, first_name, password, gender, institute_id, age, user_type):
@@ -94,13 +111,33 @@ class Database:
                              "gender": gender,
                              "institute_id": institute_id,
                              "age": age,
-                             "user_type": user_type}
+                             "user_type": user_type,
+                             "score": 0,
+                             "right_ans": 0,
+                             "num_of_questions": 0}
                 users.insert_one(user_data)
                 print("Register success")
                 return True
             except pymongo.errors.DuplicateKeyError as err:
                 print("Error signing up")
                 return False
+
+    @staticmethod
+    def setUserScore(score,right_ans,num_of_questions):
+        if Database.is_connected:
+            Database.is_logging_in = True
+            db = Database.client.get_database(DATABASE)
+            users = db.get_collection(USERS_COLLECTION)
+            user = users.find_one({"_id": Database.user_id})
+            new_score = int(user["score"]) + score
+            update = {
+                    "$set": {
+                        "score": new_score,
+                        "right_ans": right_ans,
+                        "num_of_questions": num_of_questions
+                    }
+                    }
+            users.find_one_and_update(user,update)
 
     @staticmethod
     def login(user_id, password):
@@ -136,7 +173,7 @@ class Database:
     def getInstitute(institute_id):
         db = Database.client.get_database(DATABASE)
         institutes = db.get_collection(INSTITUTE_COLLECTION)
-        data = institutes.find_one({"_id": institute_id})
+        data = institutes.find_one({"name": institute_id})
         if data is not None:
             inst = Institute(data["name"],
                         data["_id"],

@@ -9,6 +9,7 @@ import StatisticsPage
 import Game
 import ReportPage
 
+
 class MainMenu(Page):
     def __init__(self):
         Page.__init__(self)
@@ -33,6 +34,7 @@ class MainMenu(Page):
         super(MainMenu,self).draw_page()
         self.draw_text('Welcome {}'.format(self.user.full_name), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 410, 20)
         self.draw_text('BubbleMath', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 230, 150)
+        self.draw_text('Admin Message', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 50, 300)
         self.play_button.draw(self.screen)
         self.myProfile_button.draw(self.screen)
         if(database.user_type == UserType.counselor.name):
