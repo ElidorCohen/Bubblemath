@@ -21,5 +21,4 @@ def game_loop():
 
     pygame.quit()
 
-
 game_loop()

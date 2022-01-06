@@ -8,6 +8,7 @@ from User import UserType
 import StatisticsPage
 import Game
 import ReportPage
+import MessagePage
 
 
 class MainMenu(Page):
@@ -18,15 +19,17 @@ class MainMenu(Page):
         self.statistics_image = pygame.image.load('statistics.png').convert_alpha()
         self.report_image = pygame.image.load('report.png').convert_alpha()
         self.disconect_image = pygame.image.load('connect2.png').convert_alpha()
-        self.notifictions_image = pygame.image.load('notifictions.png').convert_alpha()
+        self.update_image = pygame.image.load('update.png').convert_alpha()
         self.mail_image = pygame.image.load('mail.png').convert_alpha()
+        self.share_image = pygame.image.load('share.png').convert_alpha()
         
+        self.share_button = button.Button(890, 95, self.share_image, 0.18)
         self.play_button = button.Button(360, 300, self.play_image, 0.35)
         self.myProfile_button = button.Button(340, 400, self.myProfile_image, 0.35)
         self.statistics_button = button.Button(357, 500, self.statistics_image, 0.35) 
         self.report_button = button.Button(780, 645, self.report_image, 0.3)
         self.disconect_button = button.Button(1, 650, self.disconect_image, 0.3)
-        self.notifictions_button = button.Button(930, 40, self.notifictions_image,0.7)
+        self.update_button = button.Button(890, 40, self.update_image,0.2)
         self.mail_button = button.Button(30, 40, self.mail_image, 0.7)
         self.user = database.getUser(database.user_id)
 
@@ -35,14 +38,16 @@ class MainMenu(Page):
         self.draw_text('Welcome {}'.format(self.user.full_name), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 410, 20)
         self.draw_text('BubbleMath', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 230, 150)
         self.draw_text('Admin Message', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 50, 300)
+        self.draw_text('its here', 25, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 20, 350)
         self.play_button.draw(self.screen)
         self.myProfile_button.draw(self.screen)
         if(database.user_type == UserType.counselor.name):
             self.statistics_button.draw(self.screen)
             self.report_button.draw(self.screen)
         self.disconect_button.draw(self.screen)
-        self.notifictions_button.draw(self.screen)
+        self.update_button.draw(self.screen)
         self.mail_button.draw(self.screen)
+        self.share_button.draw(self.screen)
 
     def handle_page(self):
         for event in pygame.event.get():
@@ -62,12 +67,15 @@ class MainMenu(Page):
                 print("disconect_buttone")
                 database.disconnect()
                 return MainPage.MainPage()
-            if self.notifictions_button.is_clicked(event):
-                print("notifictions_button")
+            if self.update_button.is_clicked(event):
+                print("update_button")
                 #return MyProfile.MyProfile
+            if self.share_button.is_clicked(event):
+                print("Share_button")
+                pass
             if self.mail_button.is_clicked(event):
                 print("mail_button")
-                #return MyProfile.MyProfile
+                return MessagePage.MessagePage()
             if event.type == pygame.QUIT:
                 pygame.quit()
         return self

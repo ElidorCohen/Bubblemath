@@ -33,7 +33,9 @@ class Game(Page):
     def __init__(self):
         Page.__init__(self)
         self.background = pygame.transform.scale(pygame.image.load(os.path.join('game_background.png')), (self.PAGE_W, self.PAGE_H))
+        self.sound_image = pygame.image.load('sound.png').convert_alpha()
         self.return_image = pygame.image.load('return.png').convert_alpha()
+        self.sound_button = button.Button(940, 50, self.sound_image, 0.4)
         self.return_button = button.Button(5, 640, self.return_image, 0.3)
         self.a_b_sequence = [i for i in range(10)]
         self.answer_sequence = [i for i in range(100)]
@@ -59,8 +61,9 @@ class Game(Page):
         self.draw_text('Time: {}'.format(int(self.time_remaining)), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 10, 100)
         self.draw_text('Score: {}'.format(self.score), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 10, 150)
         self.draw_text('Correct answer: {0}/{1}'.format(self.num_of_correct, self.num_of_questions), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 10, 200)
-        self.draw_text('{0} X {1}'.format(self.a, self.b), 60, 'david.ttf', (0, 0, 0), self.screen, 500, 400)
+        self.draw_text('{0} X {1}'.format(self.a, self.b), 60, 'david.ttf', (0, 0, 0), self.screen, 520, 250)
         self.return_button.draw(self.screen)
+        self.sound_button.draw(self.screen)
         
     def draw_bubbles(self):
         for bubble in self.bubbles:
@@ -106,6 +109,8 @@ class Game(Page):
             if self.return_button.is_clicked(event):
                 database.setUserScore(self.score,self.num_of_correct,self.num_of_questions)
                 return MainMenu.MainMenu()
+            if self.sound_button.is_clicked(event):
+                pass #SOUND
             if event.type == pygame.QUIT:
                 pygame.quit()
         if(not self.is_waiting_for_answer):

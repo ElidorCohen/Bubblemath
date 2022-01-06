@@ -5,6 +5,7 @@ from InputBox import InputBox
 from Page import Page
 import MainPage
 from Database import Database as database
+import GuidePage
 
 class RegisterPage(Page):
     def __init__(self):
@@ -51,6 +52,7 @@ class RegisterPage(Page):
                 self.user_type_input = UserType.counselor
             if self.done_button.is_clicked(event):
                 registered = database.register(self.id_input.text,self.full_name_input.text,self.password_input.text,self.gender_input.text,self.institute_input.text,self.age_input.text,self.user_type_input.name)
+                return GuidePage.GuidePage()
                 if registered:
                     return #Guide.Guide()
             if self.return_button.is_clicked(event):
