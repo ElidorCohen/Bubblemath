@@ -1,8 +1,11 @@
 import pymongo
 from pymongo import MongoClient
 from pymongo import database
+from typing import List
+
 from User import User, UserType
 from Institute import Institute
+from Message import Message,Feedback
 
 DATABASE = "BubbleMath"
 ADMIN = "admin"
@@ -11,6 +14,8 @@ USERS_COLLECTION = "Users"
 INSTITUTE_COLLECTION = "Institutes"
 REPORTS_COLLECTION = "Reports"
 GENERAL_COLLECTION = "General"
+MESSAGES_COLLECTION = "Messages"
+FEEDBACKS_COLLECTION = "Feedbacks"
 
 # Commands
 CREATE_USER = "createUser"
@@ -64,8 +69,78 @@ class Database:
             db = Database.client.get_database(DATABASE)
             reports = db.get_collection(REPORTS_COLLECTION)
             data = {"text": report.text}
-            print("PRINT DATABASE {}".format(report.text))
             reports.insert_one(data)
+
+    @staticmethod
+    def send_feedback(to_user_id,text,grade):
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(FEEDBACKS_COLLECTION)
+            data = {"from_user_id": Database.user_id,
+                    "to_user_id": to_user_id,
+                    "text": text,
+                    "grade": grade}
+            col.insert_one(data)
+
+    @staticmethod
+    def get_feedbacks() -> List[Feedback]:
+        feed_list = []
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(FEEDBACKS_COLLECTION)
+            data = col.find({"to_user_id": Database.user_id})
+            if data is not None:
+                for i in data:
+                    msg = Feedback(i["from_user_id"], i["to_user_id"], i["text"],i["grade"])
+                    feed_list.append(msg)
+                return feed_list
+        return None
+
+    @staticmethod
+    def send_message(to_user_id,text):
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(MESSAGES_COLLECTION)
+            data = {"from_user_id": Database.user_id,
+                    "to_user_id": to_user_id,
+                    "text": text}
+            col.insert_one(data)
+
+    @staticmethod
+    def get_messages() -> List[Message]:
+        msg_list = []
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(MESSAGES_COLLECTION)
+            data = col.find({"to_user_id": Database.user_id})
+            if data is not None:
+                for i in data:
+                    msg = Message(i["from_user_id"], i["to_user_id"], i["text"])
+                    msg_list.append(msg)
+                return msg_list
+        return None
+
+    @staticmethod
+    def get_all_users() -> List[User]:
+        user_list = []
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(USERS_COLLECTION)
+            data = col.find()
+            if data is not None:
+                for i in data:
+                    user = User(i["_id"],
+                                i["full_name"],
+                                i["age"],
+                                i["user_type"],
+                                i["gender"],
+                                i["institute_id"],
+                                i["score"],
+                                i["right_ans"],
+                                i["num_of_questions"])
+                    user_list.append(user)
+                return user_list
+        return None
 
     @staticmethod
     def getUser(user_id):
@@ -90,14 +165,69 @@ class Database:
     def set_admin_msg(text):
         if Database.is_connected:
             db = Database.client.get_database(DATABASE)
-            col = db.get_collection(USERS_COLLECTION)
+            col = db.get_collection(GENERAL_COLLECTION)
             data = col.find_one({"_id": "admin_msg"})
             update = {
                     "$set": {
                         "text": text,
                     }
                     }
-            col.find_one_and_update(data,update)    
+            col.find_one_and_update(data,update)
+
+
+    @staticmethod
+    def get_admin_msg():
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(GENERAL_COLLECTION)
+            data = col.find_one({"_id": "user_id"})
+            return data["text"]
+        return None
+
+    @staticmethod
+    def set_update_available(is_available):
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(GENERAL_COLLECTION)
+            data = col.find_one({"_id": "update"})
+            update = {
+                "$set": {
+                    "is_available": is_available,
+                }
+            }
+            col.find_one_and_update(data, update)
+
+    @staticmethod
+    def get_available_update_link():
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(GENERAL_COLLECTION)
+            data = col.find_one({"_id": "update"})
+            if data["is_available"]:
+                return data["link"]
+        return None
+
+    @staticmethod
+    def set_time_per_question(time):
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(GENERAL_COLLECTION)
+            data = col.find_one({"_id": "game_settings"})
+            update = {
+                "$set": {
+                    "time_per_question": time,
+                }
+            }
+            col.find_one_and_update(data, update)
+
+    @staticmethod
+    def get_time_per_question():
+        if Database.is_connected:
+            db = Database.client.get_database(DATABASE)
+            col = db.get_collection(GENERAL_COLLECTION)
+            data = col.find_one({"_id": "game_settings"})
+            return int(data["time_per_question"])
+        return None
 
     @staticmethod
     def register(user_id, first_name, password, gender, institute_id, age, user_type):
@@ -181,7 +311,6 @@ class Database:
                         data["counsler_id"],
                         data["rank"])
             return inst
-        print("fail databasa")
         return None
 
 
