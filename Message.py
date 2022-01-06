@@ -1,6 +1,6 @@
 class Message:
-    def __init__(self, from_id=None, to_id=None, text=None):
-        self.from_user_id = from_id
+    def __init__(self, from_name = None, to_id=None, text=None):
+        self.from_user_name = from_name
         self.to_user_id = to_id
         self.text = text
 

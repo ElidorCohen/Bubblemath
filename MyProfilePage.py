@@ -32,6 +32,10 @@ class MyProfile(Page):
         self.send_update_button = button.Button(40, 650, self.send_update_image, 0.2)
         self.settings_image = pygame.image.load('update_settings.png').convert_alpha()
         self.settings_button = button.Button(710, 400, self.settings_image, 0.2)
+        self.is_time_set = False
+        self.is_send_update = False
+        self.admin_msg_sent = False
+
 
     def draw_page(self):
         super(MyProfile,self).draw_page()
@@ -45,9 +49,12 @@ class MyProfile(Page):
         elif(database.user_type == UserType.admin.name):
             self.draw_text('Admin Message:', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 380, 500)
             self.draw_text('Change Time:', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 700, 300)
-            self.send_button.draw(self.screen)
-            self.settings_button.draw(self.screen)
-            self.send_update_button.draw(self.screen)
+            if not self.admin_msg_sent:
+                self.send_button.draw(self.screen)
+            if not self.is_time_set:
+                self.settings_button.draw(self.screen)
+            if not self.is_send_update:
+                self.send_update_button.draw(self.screen)
             if(self.reports is not None):
                 self.draw_reports()
             
@@ -69,9 +76,14 @@ class MyProfile(Page):
             if self.edit_button.is_clicked(event):
                 return MainPage.MainPage()
             if self.send_button.is_clicked(event):
-                pass
+                database.set_admin_msg(self.admin_message_input.text)
+                self.admin_msg_sent = True
             if self.send_update_button.is_clicked(event):
-                pass
+                database.set_update_available(True)
+                self.is_send_update = True
+            if self.settings_button.is_clicked(event):
+                database.set_time_per_question(int(self.time_input.text))
+                self.is_time_set = True
             if event.type == pygame.QUIT:
                 pygame.quit()
             for box in self.input_boxes:

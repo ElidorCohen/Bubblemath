@@ -34,6 +34,7 @@ class Database:
     is_logging_in = False
     user_type = None
     user_id = None
+    user_name = None
 
     @staticmethod
     def connectToServer():
@@ -101,7 +102,7 @@ class Database:
         if Database.is_connected:
             db = Database.client.get_database(DATABASE)
             col = db.get_collection(MESSAGES_COLLECTION)
-            data = {"from_user_id": Database.user_id,
+            data = {"from_user_name": Database.user_name,
                     "to_user_id": to_user_id,
                     "text": text}
             col.insert_one(data)
@@ -115,7 +116,7 @@ class Database:
             data = col.find({"to_user_id": Database.user_id})
             if data is not None:
                 for i in data:
-                    msg = Message(i["from_user_id"], i["to_user_id"], i["text"])
+                    msg = Message(i["from_user_name"], i["to_user_id"], i["text"])
                     msg_list.append(msg)
                 return msg_list
         return None
@@ -129,6 +130,8 @@ class Database:
             data = col.find()
             if data is not None:
                 for i in data:
+                    if i["_id"] == Database.user_id:
+                        continue
                     user = User(i["_id"],
                                 i["full_name"],
                                 i["age"],
@@ -176,12 +179,12 @@ class Database:
 
 
     @staticmethod
-    def get_admin_msg():
+    def get_admin_msg() -> str:
         if Database.is_connected:
             db = Database.client.get_database(DATABASE)
             col = db.get_collection(GENERAL_COLLECTION)
-            data = col.find_one({"_id": "user_id"})
-            return data["text"]
+            data = col.find_one({"_id": "admin_msg"})
+            return str(data["text"])
         return None
 
     @staticmethod
@@ -247,6 +250,7 @@ class Database:
                              "num_of_questions": 0}
                 users.insert_one(user_data)
                 print("Register success")
+                Database.login(user_id,password)
                 return True
             except pymongo.errors.DuplicateKeyError as err:
                 print("Error signing up")
@@ -283,6 +287,7 @@ class Database:
                     Database.is_logged_in = True
                     Database.user_id = user_id
                     Database.user_type = data["user_type"]
+                    Database.user_name = data["full_name"]
                     print(Database.user_type)
                     print(UserType.counselor.name)
                     print("logged in as {}".format(data["user_type"]))

@@ -7,8 +7,18 @@ from random import *
 from Database import Database as database
 import os
 import time
+from pygame import mixer
 
-QUESTION_TIME = 10
+# Starting the mixer
+mixer.init()
+
+# Loading the song
+mixer.music.load("bubble_pop.mp3")
+
+# Setting the volume
+mixer.music.set_volume(0.7)
+
+# Start playing the song
 class AnswerBubble():
     def __init__(self,x,y,screen):
         self.xPos = x
@@ -55,6 +65,8 @@ class Game(Page):
         self.right_answer = None
         self.is_waiting_for_answer = False
         self.bubbles = [self.bubble1, self.bubble2, self.bubble3, self.bubble4]
+        self.time_per_question = database.get_time_per_question()
+        self.is_sound_enabled = True
 
     def draw_page(self):
         super(Game,self).draw_page()
@@ -95,6 +107,8 @@ class Game(Page):
         for event in pygame.event.get():
             for bubble in self.bubbles:
                 if bubble.bubble_button.is_clicked(event):
+                    if self.is_sound_enabled:
+                        mixer.music.play()
                     if(self.check_ans(bubble.answer)):
                         print("correct")
                         self.num_of_correct = self.num_of_correct + 1
@@ -110,7 +124,7 @@ class Game(Page):
                 database.setUserScore(self.score,self.num_of_correct,self.num_of_questions)
                 return MainMenu.MainMenu()
             if self.sound_button.is_clicked(event):
-                pass #SOUND
+                self.is_sound_enabled = not self.is_sound_enabled
             if event.type == pygame.QUIT:
                 pygame.quit()
         if(not self.is_waiting_for_answer):
@@ -118,7 +132,7 @@ class Game(Page):
             self.is_waiting_for_answer = True
 
         self.delta_time = time.time() - self.start_question_time
-        self.time_remaining = QUESTION_TIME - self.delta_time
+        self.time_remaining = self.time_per_question - self.delta_time
         self.draw_bubbles()
         self.handle_bubbles()
 

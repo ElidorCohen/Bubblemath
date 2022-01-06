@@ -9,6 +9,7 @@ import StatisticsPage
 import Game
 import ReportPage
 import MessagePage
+import webbrowser
 
 
 class MainMenu(Page):
@@ -22,26 +23,27 @@ class MainMenu(Page):
         self.update_image = pygame.image.load('update.png').convert_alpha()
         self.mail_image = pygame.image.load('mail.png').convert_alpha()
         self.share_image = pygame.image.load('share.png').convert_alpha()
-        
+
         self.share_button = button.Button(890, 95, self.share_image, 0.18)
         self.play_button = button.Button(360, 300, self.play_image, 0.35)
         self.myProfile_button = button.Button(340, 400, self.myProfile_image, 0.35)
-        self.statistics_button = button.Button(357, 500, self.statistics_image, 0.35) 
+        self.statistics_button = button.Button(357, 500, self.statistics_image, 0.35)
         self.report_button = button.Button(780, 645, self.report_image, 0.3)
         self.disconect_button = button.Button(1, 650, self.disconect_image, 0.3)
-        self.update_button = button.Button(890, 40, self.update_image,0.2)
+        self.update_button = button.Button(890, 40, self.update_image, 0.2)
         self.mail_button = button.Button(30, 40, self.mail_image, 0.7)
         self.user = database.getUser(database.user_id)
 
     def draw_page(self):
-        super(MainMenu,self).draw_page()
-        self.draw_text('Welcome {}'.format(self.user.full_name), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 410, 20)
+        super(MainMenu, self).draw_page()
+        self.draw_text('Welcome {}'.format(self.user.full_name), 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0),
+                       self.screen, 410, 20)
         self.draw_text('BubbleMath', 100, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 230, 150)
         self.draw_text('Admin Message', 30, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 50, 300)
-        self.draw_text('its here', 25, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 20, 350)
+        self.draw_text(database.get_admin_msg(), 25, 'Harlow Solid Italic Italic.ttf', (0, 0, 0), self.screen, 20, 350)
         self.play_button.draw(self.screen)
         self.myProfile_button.draw(self.screen)
-        if(database.user_type == UserType.counselor.name):
+        if (database.user_type == UserType.counselor.name):
             self.statistics_button.draw(self.screen)
             self.report_button.draw(self.screen)
         self.disconect_button.draw(self.screen)
@@ -68,13 +70,10 @@ class MainMenu(Page):
                 database.disconnect()
                 return MainPage.MainPage()
             if self.update_button.is_clicked(event):
-                print("update_button")
-                #return MyProfile.MyProfile
+                webbrowser.open('https://github.com/ElidorCohen/Bubblemath')
             if self.share_button.is_clicked(event):
-                print("Share_button")
-                pass
+                webbrowser.open('https://github.com/ElidorCohen/Bubblemath')
             if self.mail_button.is_clicked(event):
-                print("mail_button")
                 return MessagePage.MessagePage()
             if event.type == pygame.QUIT:
                 pygame.quit()
